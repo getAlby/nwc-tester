@@ -53,11 +53,11 @@
                 const resultElement = document.getElementById('result');
                 resultElement.innerHTML = 
                     '<h2>Invoice:</h2>' +
-                    '<pre><code>' + JSON.stringify(invoice, null, 2) + '</code></pre>' +
+                    '<pre><code id="invoice">' + JSON.stringify(invoice, null, 2) + '</code></pre>' +
                     '<h2>Info:</h2>' +
-                    '<pre><code>' + JSON.stringify(info, null, 2) + '</code></pre>' +
+                    '<pre><code id="info">' + JSON.stringify(info, null, 2) + '</code></pre>' +
                     '<h2>Latest Transactions:</h2>' +
-                    '<pre><code>' + JSON.stringify(transactions, null, 2) + '</code></pre>';
+                    '<pre><code id="transactions">' + JSON.stringify(transactions, null, 2) + '</code></pre>';
             } catch (error) {
                 document.getElementById('result').innerHTML = 'Error: ' + error.message;
             }
