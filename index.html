@@ -7,9 +7,9 @@
 </head>
 <body>
     <h1>NWC Tester</h1>
-    <form id="nwcForm" action="index.html" method="GET">
+    <form id="nwcForm" action="#" method="GET">
         <label for="nwcSecret">NWC Secret:</label>
-        <input type="text" id="nwcSecret" name="nwc" placeholder="Enter NWC secret">
+        <input type="text" id="nwcSecret" name="nwc" placeholder="Enter NWC secret" required>
         
         <label>
             <input type="checkbox" name="invoice" value="1"> Load Invoice
@@ -48,16 +48,11 @@
             return transactions;
         }
 
-        async function processNWC(nwcSecret) {
+        async function processNWC(nwcSecret, loadInvoice, loadInfo, loadTransactions) {
             if (!nwcSecret) {
                 document.getElementById('result').innerHTML = 'Error: NWC secret not provided';
                 return;
             }
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const loadInvoice = urlParams.get('invoice') === '1';
-            const loadInfo = urlParams.get('info') === '1';
-            const loadTransactions = urlParams.get('transactions') === '1';
 
             const resultElement = document.getElementById('result');
             resultElement.innerHTML = ''; // Clear previous results
@@ -90,18 +85,37 @@
 
         function main() {
             const urlParams = new URLSearchParams(window.location.search);
-            const nwcSecret = urlParams.get('nwc');
+            const nwcSecret = urlParams.get('nwc') || ''; // Get NWC secret from query params
+            const loadInvoice = urlParams.get('invoice') === '1'; // Get invoice option
+            const loadInfo = urlParams.get('info') === '1'; // Get info option
+            const loadTransactions = urlParams.get('transactions') === '1'; // Get transactions option
 
+            // Set the input field if NWC secret is provided in query params
             if (nwcSecret) {
-                processNWC(nwcSecret);
+                document.getElementById('nwcSecret').value = nwcSecret;
             }
+
+            // Set the checkboxes based on query params
+            document.querySelector('input[name="invoice"]').checked = loadInvoice;
+            document.querySelector('input[name="info"]').checked = loadInfo;
+            document.querySelector('input[name="transactions"]').checked = loadTransactions;
 
             const form = document.getElementById('nwcForm');
             form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const inputSecret = document.getElementById('nwcSecret').value;
-                processNWC(inputSecret);
+                event.preventDefault(); // Prevent default form submission
+
+                const nwcSecret = document.getElementById('nwcSecret').value;
+                const loadInvoice = form.querySelector('input[name="invoice"]').checked;
+                const loadInfo = form.querySelector('input[name="info"]').checked;
+                const loadTransactions = form.querySelector('input[name="transactions"]').checked;
+
+                processNWC(nwcSecret, loadInvoice, loadInfo, loadTransactions);
             });
+
+            // If query params are present, process them immediately
+            if (nwcSecret) {
+                processNWC(nwcSecret, loadInvoice, loadInfo, loadTransactions);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', main);
