@@ -10,6 +10,17 @@
     <form id="nwcForm" action="" method="GET">
         <label for="nwcSecret">NWC Secret:</label>
         <input type="text" id="nwcSecret" name="nwc" placeholder="Enter NWC secret">
+        
+        <label>
+            <input type="checkbox" name="invoice" value="1"> Load Invoice
+        </label>
+        <label>
+            <input type="checkbox" name="info" value="1"> Load Info
+        </label>
+        <label>
+            <input type="checkbox" name="transactions" value="1"> Load Transactions
+        </label>
+        
         <button type="submit">Submit</button>
     </form>
     <div id="result"></div>
