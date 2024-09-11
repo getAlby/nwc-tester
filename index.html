@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NWC Invoice Generator</title>
+</head>
+<body>
+    <h1>NWC Invoice Generator</h1>
+    <form id="nwcForm" action="" method="GET">
+        <label for="nwcSecret">NWC Secret:</label>
+        <input type="text" id="nwcSecret" name="nwc" placeholder="Enter NWC secret">
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+
+    <script type="module">
+        import { nwc } from "https://esm.sh/@getalby/sdk@3.7.0";
+
+        async function generateInvoice(client) {
+            const invoice = await client.makeInvoice({
+                amount: 1000,
+                memo: 'Test invoice'
+            });
+            return invoice;
+        }
+
+        async function getNodeInfo(client) {
+            const info = await client.getInfo();
+            return info;
+        }
+
+        async function getLatestTransactions(client) {
+            const transactions = await client.listTransactions({
+                limit: 5 // Adjust this number to show more or fewer transactions
+            });
+            return transactions;
+        }
+
+        async function processNWC(nwcSecret) {
+            if (!nwcSecret) {
+                document.getElementById('result').innerHTML = 'Error: NWC secret not provided';
+                return;
+            }
+
+            try {
+                const client = new nwc.NWCClient({nostrWalletConnectUrl: nwcSecret});
+                
+                const invoice = await generateInvoice(client);
+                const info = await getNodeInfo(client);
+                const transactions = await getLatestTransactions(client);
+
+                const resultElement = document.getElementById('result');
+                resultElement.innerHTML = 
+                    '<h2>Invoice:</h2>' +
+                    '<pre><code>' + JSON.stringify(invoice, null, 2) + '</code></pre>' +
+                    '<h2>Info:</h2>' +
+                    '<pre><code>' + JSON.stringify(info, null, 2) + '</code></pre>' +
+                    '<h2>Latest Transactions:</h2>' +
+                    '<pre><code>' + JSON.stringify(transactions, null, 2) + '</code></pre>';
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        function main() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const nwcSecret = urlParams.get('nwc');
+
+            if (nwcSecret) {
+                processNWC(nwcSecret);
+            }
+
+            const form = document.getElementById('nwcForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const inputSecret = document.getElementById('nwcSecret').value;
+                processNWC(inputSecret);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', main);
+    </script>
+</body>
+</html>
