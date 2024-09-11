@@ -43,23 +43,37 @@
                 return;
             }
 
+            const urlParams = new URLSearchParams(window.location.search);
+            const loadInvoice = urlParams.get('invoice') === '1';
+            const loadInfo = urlParams.get('info') === '1';
+            const loadTransactions = urlParams.get('transactions') === '1';
+
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = ''; // Clear previous results
+
             try {
                 const client = new nwc.NWCClient({nostrWalletConnectUrl: nwcSecret});
-                
-                const invoice = await generateInvoice(client);
-                const info = await getNodeInfo(client);
-                const transactions = await getLatestTransactions(client);
 
-                const resultElement = document.getElementById('result');
-                resultElement.innerHTML = 
-                    '<h2>Invoice:</h2>' +
-                    '<pre><code id="invoice">' + JSON.stringify(invoice, null, 2) + '</code></pre>' +
-                    '<h2>Info:</h2>' +
-                    '<pre><code id="info">' + JSON.stringify(info, null, 2) + '</code></pre>' +
-                    '<h2>Latest Transactions:</h2>' +
-                    '<pre><code id="transactions">' + JSON.stringify(transactions, null, 2) + '</code></pre>';
+                if (loadInvoice) {
+                    const invoice = await generateInvoice(client);
+                    resultElement.innerHTML += 
+                        '<h2>Invoice:</h2>' +
+                        '<pre><code id="invoice">' + JSON.stringify(invoice, null, 2) + '</code></pre>';
+                }
+                if (loadInfo) {
+                    const info = await getNodeInfo(client);
+                    resultElement.innerHTML += 
+                        '<h2>Info:</h2>' +
+                        '<pre><code id="info">' + JSON.stringify(info, null, 2) + '</code></pre>';
+                }
+                if (loadTransactions) {
+                    const transactions = await getLatestTransactions(client);
+                    resultElement.innerHTML += 
+                        '<h2>Latest Transactions:</h2>' +
+                        '<pre><code id="transactions">' + JSON.stringify(transactions, null, 2) + '</code></pre>';
+                }
             } catch (error) {
-                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+                resultElement.innerHTML = 'Error: ' + error.message;
             }
         }
 
