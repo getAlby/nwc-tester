@@ -76,7 +76,7 @@
                     resultElement.innerHTML += 
                         '<h2>Info:</h2>' +
                         '<pre><code id="info">' + JSON.stringify(info, null, 2) + '</code></pre>' +
-                        '<pre><code id="invoice-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
+                        '<pre><code id="info-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
                 }
                 if (loadTransactions) {
                     const startTime = performance.now();
@@ -85,7 +85,7 @@
                     resultElement.innerHTML += 
                         '<h2>Latest Transactions:</h2>' +
                         '<pre><code id="transactions">' + JSON.stringify(transactions, null, 2) + '</code></pre>' +
-                        '<pre><code id="invoice-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
+                        '<pre><code id="transactions-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
                 }
             } catch (error) {
                 resultElement.innerHTML = 'Error: ' + error.message;
