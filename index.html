@@ -61,22 +61,31 @@
                 const client = new nwc.NWCClient({nostrWalletConnectUrl: nwcSecret});
 
                 if (loadInvoice) {
+                    const startTime = performance.now();
                     const invoice = await generateInvoice(client);
+                    const endTime = performance.now();
                     resultElement.innerHTML += 
                         '<h2>Invoice:</h2>' +
-                        '<pre><code id="invoice">' + JSON.stringify(invoice, null, 2) + '</code></pre>';
+                        '<pre><code id="invoice">' + JSON.stringify(invoice, null, 2) + '</code></pre>' + 
+                        '<pre><code id="invoice-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
                 }
                 if (loadInfo) {
+                    const startTime = performance.now();
                     const info = await getNodeInfo(client);
+                    const endTime = performance.now();
                     resultElement.innerHTML += 
                         '<h2>Info:</h2>' +
-                        '<pre><code id="info">' + JSON.stringify(info, null, 2) + '</code></pre>';
+                        '<pre><code id="info">' + JSON.stringify(info, null, 2) + '</code></pre>' +
+                        '<pre><code id="invoice-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
                 }
                 if (loadTransactions) {
+                    const startTime = performance.now();
                     const transactions = await getLatestTransactions(client);
+                    const endTime = performance.now();
                     resultElement.innerHTML += 
                         '<h2>Latest Transactions:</h2>' +
-                        '<pre><code id="transactions">' + JSON.stringify(transactions, null, 2) + '</code></pre>';
+                        '<pre><code id="transactions">' + JSON.stringify(transactions, null, 2) + '</code></pre>' +
+                        '<pre><code id="invoice-time">' + (endTime - startTime).toFixed(2) + '</code></pre>';
                 }
             } catch (error) {
                 resultElement.innerHTML = 'Error: ' + error.message;
